@@ -1,9 +1,13 @@
 const express = require('express');
-const { login } = require('../controllers/authController');
-const { protect, roleAuth } = require('../middleware/auth');
+const { login, registerUser } = require('../controllers/authController');
+const { protect, roleAuth } = require('../middlewares/auth');
 
 const router = express.Router();
 
+// Register route
+router.post('/register', registerUser);
+
+// Login route
 router.post('/login', login);
 
 // Protected routes for user and admin

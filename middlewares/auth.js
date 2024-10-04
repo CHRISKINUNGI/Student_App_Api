@@ -1,8 +1,9 @@
 const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 
 // Protect middleware to ensure the user is authenticated
-const protect = (req, res, next) => {
-  let token = req.header('Authorization');
+const protect = async (req, res, next) => {
+  let token = req.headers.authorization;
 
   if (!token || !token.startsWith('Bearer')) {
     return res.status(401).json({ message: 'Not authorized, token missing' });
@@ -14,10 +15,12 @@ const protect = (req, res, next) => {
 
     // Verify the token and extract user info
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    
-    // Attach user info (id and role) to the request object
-    req.user = decoded;
-    next(); // Move to the next middleware or route handler
+
+    // Find the user and attach user info (id and role) to the request object
+    req.user = await User.findById(decoded.id).select('-password');
+
+    // Proceed to the next middleware or route handler
+    next();
   } catch (error) {
     return res.status(401).json({ message: 'Token is not valid' });
   }
@@ -26,7 +29,6 @@ const protect = (req, res, next) => {
 // Role-based access control middleware
 const roleAuth = (role) => {
   return (req, res, next) => {
-    // Check if the user has the required role
     if (req.user.role !== role) {
       return res.status(403).json({ message: `Access denied: ${role} role required` });
     }

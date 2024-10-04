@@ -2,6 +2,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 
+// Load environment variables from .env file
+dotenv.config(); // This must be called before accessing any env variables
+
 // Import the routes
 const authRoutes = require('./routes/auth'); // Auth routes
 const visaApplicationRoutes = require('./routes/visaApplication'); // Visa application routes

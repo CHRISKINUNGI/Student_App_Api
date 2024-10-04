@@ -4,10 +4,13 @@ const path = require('path');
 // Set up Multer storage
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
+    console.log('Setting upload destination');
     cb(null, './uploads'); // Uploads directory
   },
   filename: (req, file, cb) => {
-    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname)); // File name format
+    const filename = file.fieldname + '-' + Date.now() + path.extname(file.originalname);
+    console.log('File being uploaded:', filename);
+    cb(null, filename); // File name format
   }
 });
 
@@ -15,9 +18,13 @@ const storage = multer.diskStorage({
 const fileFilter = (req, file, cb) => {
   const allowedTypes = /jpeg|jpg|png|pdf/;
   const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+  console.log('File type:', file.mimetype);
+
   if (extname) {
+    console.log('File type is allowed');
     return cb(null, true);
   } else {
+    console.log('File type is not allowed');
     cb(new Error('Only images and PDFs are allowed'));
   }
 };
