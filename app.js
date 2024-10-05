@@ -1,20 +1,20 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
+const express = require("express");
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const path = require("path");
 
-const applicationRoutes = require('./routes/application'); // Application routes
+const applicationRoutes = require("./routes/application"); // Application routes
 
-// Load environment variables from .env file
-dotenv.config(); // This must be called before accessing any env variables
+dotenv.config();
 
 // Import the routes
 const authRoutes = require("./routes/auth");
+const adminRoutes = require("./routes/admin");
 const visaApplicationRoutes = require("./routes/visaApplication");
 const studentRoutes = require("./routes/student");
-const { protect, roleAuth } = require("./middlewares/auth");
+const { protect, roleAuth, assignUser } = require("./middlewares/auth");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -40,6 +40,9 @@ app.use(
   })
 );
 
+// Middleware to parse application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: true }));
+
 // Middleware for JSON parsing
 app.use(express.json());
 
@@ -49,9 +52,8 @@ mongoose
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
-// Middleware to ensure user and notification are always defined
-app.use((req, res, next) => {
-  res.locals.user = req.session.user || null;
+// Middleware to assign session variables to locals
+app.use(assignUser, (req, res, next) => {
   res.locals.request = req;
   res.locals.notification = req.session.notification || null;
   res.locals.errors = req.session.errors || null;
@@ -67,14 +69,16 @@ app.use("/student", protect, roleAuth("user"), studentRoutes);
 
 // Catch-all route for redirecting
 app.use("/", protect, (req, res) => {
+  console.log(req.originalUrl);
   return res.redirect(`/${req.user.role}/dashboard`);
 });
 
 app.use((req, res) => {
   return res.render("404");
 });
-app.use('/api/admin', adminRoutes); // Admin routes
-app.use('/api/application', applicationRoutes); // Application routes
+
+app.use("/api/admin", adminRoutes); // Admin routes
+app.use("/api/application", applicationRoutes); // Application routes
 
 // Start the server
 app.listen(PORT, () => {

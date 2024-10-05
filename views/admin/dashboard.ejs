@@ -6,7 +6,7 @@
         <div class="d-flex align-items-end row">
           <div class="col-sm-7">
             <div class="card-body">
-              <h5 class="card-title text-primary">Good Day John,</h5>
+              <h5 class="card-title text-primary">Good Day <%= user.username.toCapitalCase() %>,</h5>
               <p class="mb-2">
                 You have
                 <span class="fw-medium"><%= pending_count %></span>

@@ -3,9 +3,14 @@ function isEmpty(param) {
     return param?.length === 0;
 }
 
+String.prototype.toCapitalCase = function() {
+  return this.charAt(0).toUpperCase() + this.slice(1).toLowerCase();
+};
+
+
 const menuItems = [
     {
-        title: "Dashboard",
+        title: "Dashboard ",
         icon: "tf-icons bx bx-home-circle",
         url: "/admin/dashboard",
         allowedRoles: ["admin", "coordinator"],
@@ -29,18 +34,18 @@ const menuItems = [
         allowedRoles: ["admin", "coordinator"],
     },
     {
-        title: "Admins",
+        title: "Users",
         icon: "tf-icons bx bx-user",
         url: "#",
         subItems: [
             {
-                title: "Add Admins",
-                url: "/admin/add-admin",
+                title: "Add Users",
+                url: "/admin/add-user",
                 allowedRoles: ["admin"],
             },
             {
-                title: "View Admins",
-                url: "/admin/view-admins",
+                title: "View Users",
+                url: "/admin/view-users",
                 allowedRoles: ["admin"],
             },
         ],
