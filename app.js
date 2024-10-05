@@ -5,7 +5,6 @@ const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const path = require("path");
 
-const adminRoutes = require('./routes/admin'); // Admin routes
 const applicationRoutes = require('./routes/application'); // Application routes
 
 // Load environment variables from .env file

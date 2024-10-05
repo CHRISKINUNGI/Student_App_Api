@@ -112,7 +112,7 @@ function isURLActive(itemURL) {
     <% menuItems.forEach(item => { %>
     <% if (item.allowedRoles.includes('admin')) { %>
     <li class="menu-item <%= isURLActive(item.url) ? 'active' : '' %> <%= !isEmpty(item.subItems) && item.subItems?.some(sub => isURLActive(sub.url)) ? 'active open' : '' %>">
-      <a href="<%= item.url %>" class="menu-link <%= item.subItems ? 'menu-toggle' : '' %>">
+      <a href="/<%= item.url %>" class="menu-link <%= item.subItems ? 'menu-toggle' : '' %>">
         <i class="menu-icon tf-icons <%= item.icon %>"></i>
         <div><%= item.title %></div>
       </a>
@@ -121,7 +121,7 @@ function isURLActive(itemURL) {
         <% item.subItems.forEach(subItem => { %>
         <% if (subItem.allowedRoles.includes('admin')) { %>
         <li class="menu-item <%= isURLActive(subItem.url) ? 'active' : '' %>">
-          <a href="<%= subItem.url %>" class="menu-link">
+          <a href="/<%= subItem.url %>" class="menu-link">
             <div><%= subItem.title %></div>
           </a>
         </li>

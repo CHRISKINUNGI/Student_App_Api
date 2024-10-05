@@ -33,6 +33,7 @@ router.get("/register", redirectIfAuthenticated, (req, res) => {
 
 // Handle logout (just redirect to index for now)
 router.get("/logout", (req, res) => {
+  req.session.destroy();
   res.redirect("/auth/login");
 });
 
