@@ -1,0 +1,270 @@
+<script src="/assets/vendor/libs/jquery/jquery.js"></script>
+<script src="/assets/vendor/libs/popper/popper.js"></script>
+<script src="/assets/vendor/js/bootstrap.js"></script>
+<script src="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+<script src="/assets/vendor/js/menu.js"></script>
+
+<!-- Vendors JS -->
+<script src="/assets/vendor/libs/apex-charts/apexcharts.js"></script>
+
+<!-- Main JS -->
+<script src="/assets/js/main.js"></script>
+
+<!-- Page JS -->
+<script src="/assets/js/dashboards-analytics.js"></script>
+
+<!-- Additional JS -->
+<script src="/assets/vendor/libs/formvalidation/dist/js/FormValidation.min.js"></script>
+<script src="/assets/vendor/libs/formvalidation/dist/js/plugins/Bootstrap5.min.js"></script>
+<script src="/assets/vendor/libs/formvalidation/dist/js/plugins/AutoFocus.min.js"></script>
+<script src="/assets/vendor/libs/cleavejs/cleave.js"></script>
+<script src="/assets/vendor/libs/cleavejs/cleave-phone.js"></script>
+<script src="/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+
+<!-- Github buttons -->
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+
+
+<!-- Include Toastr JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<script>
+  // Reusable form handling function
+  // Reusable form handling function
+  // Reusable form handling function
+  function handleFormSubmission(form, config) {
+    const submitButton = form.querySelector('button[type="submit"]');
+    let loader = form.querySelector('.loader');
+
+    // Create a loader if it doesn't exist
+    if (!loader) {
+      submitButton.classList.add('flex', 'flex-row');
+      loader = document.createElement('div');
+      loader.className = 'spinner-border text-white loader d-none'; // Add Bootstrap classes
+      loader.setAttribute('role', 'status');
+      loader.style.width = '1rem';
+      loader.style.height = '1rem';
+      loader.innerHTML = '<span class="visually-hidden">Loading...</span>';
+      submitButton.appendChild(loader); // Insert loader inside the button
+    }
+
+    // Add event listener for form submission
+    form.addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent the default form submission
+
+      // Validate the form
+      const isValid = config.validate ? config.validate(form) : form.checkValidity();
+
+      if (!isValid) {
+        form.classList.add('was-validated');
+        return;
+      }
+
+      // Show loader
+      loader.classList.remove('d-none');
+      submitButton.setAttribute('disabled', true);
+
+      // Prepare form data in JSON format
+      const formData = Array.from(new FormData(form)).reduce((acc, [key, value]) => {
+        acc[key] = value;
+        return acc;
+      }, {});
+
+      const actionUrl = form.getAttribute('action') || config.action;
+      const data = JSON.stringify(formData);
+
+      console.log(data);
+
+      // Retrieve token from local storage
+      const token = localStorage.getItem('token');
+
+      // Submit the form using Fetch API
+      fetch(actionUrl, {
+          method: 'POST',
+          body: data,
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            ...(token ? {
+              'Authorization': `Bearer ${token}`
+            } : {}) // Conditionally add token
+          }
+        })
+        .then(response => {
+          loader.classList.add('d-none'); // Hide loader
+          submitButton.removeAttribute('disabled'); // Enable the button
+
+          if (response.ok) {
+            return response.json();
+          } else {
+            // Handle non-200 responses
+            return response.json().then(errData => {
+              throw new Error(errData.message || 'An unexpected error occurred.');
+            });
+          }
+        })
+        .then(data => {
+          if (config.onSuccess) {
+            config.onSuccess(data);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          loader.classList.add('d-none'); // Hide loader in case of error
+          submitButton.removeAttribute('disabled'); // Enable the button in case of error
+          if (config.onError) {
+            config.onError('An unexpected error occurred. ' + error);
+          }
+        });
+    });
+
+    // Add event listeners for input change to validate on change
+    const inputs = form.querySelectorAll('input, select, textarea'); // Select all input fields
+
+    inputs.forEach(input => {
+      input.addEventListener('input', function() {
+        config.validate(form); // Validate on input change
+      });
+    });
+  }
+
+  $(document).ready(function() {
+    (function() {
+      'use strict';
+      // Fetch all the forms we want to apply custom Bootstrap validation styles to
+      var forms = document.querySelectorAll('.needs-validation');
+      // Loop over them and prevent submission
+      Array.prototype.slice.call(forms).forEach(function(form) {
+        form.addEventListener('submit', function(event) {
+          if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          form.classList.add('was-validated');
+        }, false);
+      });
+    })();
+
+    // Datatable (jQuery)
+    $(function() {
+      var dt_basic_table = $(".datatables-basic");
+      if (dt_basic_table.length) {
+        dt_basic = dt_basic_table.DataTable({
+          columnDefs: [{
+              className: "control",
+              orderable: false,
+              searchable: false,
+              responsivePriority: 2,
+              targets: 0,
+              render: function(data, type, full, meta) {
+                return "";
+              },
+            },
+            {
+              responsivePriority: 1,
+            },
+          ],
+          dom: '<"card-header flex-column flex-md-row"<"head-label text-center"><"dt-action-buttons text-end pt-3 pt-md-0"B>><"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end"f>>t<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
+          displayLength: 7,
+          lengthMenu: [7, 10, 25, 50, 75, 100],
+
+          buttons: [{
+            extend: "collection",
+            className: "btn btn-label-primary dropdown-toggle me-2",
+            text: '<i class="bx bx-export me-sm-1"></i> <span class="d-none d-sm-inline-block">Export</span>',
+            buttons: [{
+                extend: "csv",
+                text: '<i class="bx bx-file me-1" ></i>Csv',
+                className: "dropdown-item",
+                exportOptions: {},
+              },
+              {
+                extend: "excel",
+                text: '<i class="bx bxs-file-export me-1"></i>Excel',
+                className: "dropdown-item",
+                exportOptions: {},
+              },
+
+              {
+                extend: "copy",
+                text: '<i class="bx bx-copy me-1" ></i>Copy',
+                className: "dropdown-item",
+                exportOptions: {
+                  columns: [3, 4, 5, 6, 7],
+                  format: {
+                    body: function(inner, coldex, rowdex) {
+                      if (inner.length <= 0) return inner;
+                      var el = $.parseHTML(inner);
+                      var result = "";
+                      $.each(el, function(index, item) {
+                        if (
+                          item.classList !== undefined &&
+                          item.classList.contains("user-name")
+                        ) {
+                          result =
+                            result +
+                            item.lastChild.firstChild.textContent;
+                        } else if (item.innerText === undefined) {
+                          result = result + item.textContent;
+                        } else result = result + item.innerText;
+                      });
+                      return result;
+                    },
+                  },
+                },
+              },
+            ],
+          }, ],
+          responsive: {
+            details: {
+              display: $.fn.dataTable.Responsive.display.modal({
+                header: function(row) {
+                  var data = row.data();
+                  return "Details";
+                },
+              }),
+              type: "column",
+              renderer: function(api, rowIdx, columns) {
+                var data = $.map(columns, function(col, i) {
+                  return col.title !== "" ?
+                    '<tr data-dt-row="' +
+                    col.rowIndex +
+                    '" data-dt-column="' +
+                    col.columnIndex +
+                    '">' +
+                    "<td>" +
+                    col.title +
+                    ":" +
+                    "</td> " +
+                    "<td>" +
+                    col.data +
+                    "</td>" +
+                    "</tr>" :
+                    "";
+                }).join("");
+
+                return data ?
+                  $('<table class="table"/><tbody />').append(data) :
+                  false;
+              },
+            },
+          },
+        });
+        $("div.head-label").html(
+          '<h5 class="card-title mb-0">Trial Title</h5>'
+        );
+      }
+
+      // Filter form control to default size
+      setTimeout(() => {
+        $(".dataTables_filter .form-control").removeClass(
+          "form-control-sm"
+        );
+        $(".dataTables_length .form-select").removeClass("form-select-sm");
+      }, 300);
+    });
+  });
+</script>
+</body>
+
+</html>

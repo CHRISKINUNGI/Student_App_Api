@@ -1,0 +1,136 @@
+<% 
+function isEmpty(param) {
+    return param?.length === 0;
+}
+
+const menuItems = [
+    {
+        title: "Dashboard",
+        icon: "tf-icons bx bx-home-circle",
+        url: "dashboard",
+        allowedRoles: ["admin", "coordinator"],
+    },
+    {
+        title: "Clients",
+        icon: "tf-icons bx bx-group",
+        url: "#",
+        subItems: [
+            {
+                title: "View Clients",
+                url: "view-clients",
+                allowedRoles: ["admin", "coordinator"],
+            },
+        ],
+        allowedRoles: ["admin", "coordinator"],
+    },
+    {
+        title: "Assignments",
+        icon: "tf-icons bx bx-building",
+        url: "#",
+        subItems: [
+            {
+                title: "View Assignments",
+                url: "view-assignments",
+                allowedRoles: ["admin", "coordinator"],
+            },
+        ],
+        allowedRoles: ["admin", "coordinator"],
+    },
+    {
+        title: "Admins",
+        icon: "tf-icons bx bx-user",
+        url: "#",
+        subItems: [
+            {
+                title: "Add Admins",
+                url: "add-admins",
+                allowedRoles: ["admin"],
+            },
+            {
+                title: "View Admins",
+                url: "view-admins",
+                allowedRoles: ["admin"],
+            },
+        ],
+        allowedRoles: ["admin"],
+    },
+    {
+        title: "Settings Options",
+        icon: "tf-icons bx bx-cog",
+        url: "#",
+        subItems: [
+            {
+                title: "Change Password",
+                url: "change-password",
+                allowedRoles: ["admin", "coordinator"],
+            },
+            // Add more admin options here with allowed roles
+        ],
+        allowedRoles: ["admin", "coordinator"],
+    },
+    {
+        title: "Payments",
+        icon: "tf-icons bx bx-dollar-circle",
+        url: "view_payments",
+        allowedRoles: ["admin", "coordinator"],
+    },
+    {
+        title: "Profile",
+        icon: "tf-icons bx bx-user",
+        url: "profile",
+        allowedRoles: ["admin", "coordinator"],
+    },
+    {
+        title: "Logout",
+        icon: "tf-icons bx bx-log-out-circle",
+        url: "api/logout",
+        allowedRoles: ["admin", "coordinator"],
+    },
+];
+
+function isURLActive(itemURL) {
+    return request.originalUrl === itemURL;
+}
+%>
+
+<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+  <div class="app-brand demo">
+    <a href="admin" class="app-brand-link">
+      <span class="app-brand-logo demo">
+        <img src="/assets/img/logo/png/logo.png" alt="Brand Logo" class="img-fluid logo-100" />
+      </span>
+      <span class="app-brand-text demo menu-text fw-bold ms-2"></span>
+    </a>
+    <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+      <i class="bx bx-chevron-left bx-sm align-middle"></i>
+    </a>
+  </div>
+
+  <div class="menu-inner-shadow"></div>
+
+  <ul class="menu-inner py-1">
+    <% menuItems.forEach(item => { %>
+    <% if (item.allowedRoles.includes('admin')) { %>
+    <li class="menu-item <%= isURLActive(item.url) ? 'active' : '' %> <%= !isEmpty(item.subItems) && item.subItems?.some(sub => isURLActive(sub.url)) ? 'active open' : '' %>">
+      <a href="<%= item.url %>" class="menu-link <%= item.subItems ? 'menu-toggle' : '' %>">
+        <i class="menu-icon tf-icons <%= item.icon %>"></i>
+        <div><%= item.title %></div>
+      </a>
+      <% if (item.subItems && item.subItems.length > 0) { %>
+      <ul class="menu-sub">
+        <% item.subItems.forEach(subItem => { %>
+        <% if (subItem.allowedRoles.includes('admin')) { %>
+        <li class="menu-item <%= isURLActive(subItem.url) ? 'active' : '' %>">
+          <a href="<%= subItem.url %>" class="menu-link">
+            <div><%= subItem.title %></div>
+          </a>
+        </li>
+        <% } %>
+        <% }); %>
+      </ul>
+      <% } %>
+    </li>
+    <% } %>
+    <% }); %>
+  </ul>
+</aside>
