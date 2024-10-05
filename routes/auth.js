@@ -1,6 +1,6 @@
 const express = require("express");
 const { login, registerUser } = require("../controllers/authController");
-const { protect, roleAuth } = require("../middlewares/auth");
+const { redirectIfAuthenticated } = require("../middlewares/auth");
 
 const router = express.Router();
 
@@ -11,21 +11,21 @@ router.post("/register", registerUser);
 router.post("/login", login);
 
 // Render login page
-router.get("/login", (req, res) => {
+router.get("/login", redirectIfAuthenticated, (req, res) => {
   res.render("auth/login", {
     title: "Login Page",
   });
 });
 
 //Render forgot password
-router.get("/login", (req, res) => {
+router.get("/forgot-password", redirectIfAuthenticated, (req, res) => {
   res.render("auth/forgot-password", {
     title: "Login Page",
   });
 });
 
 // Render registration page
-router.get("/register", (req, res) => {
+router.get("/register", redirectIfAuthenticated, (req, res) => {
   res.render("auth/register", {
     title: "Registration Page",
   });
@@ -33,7 +33,7 @@ router.get("/register", (req, res) => {
 
 // Handle logout (just redirect to index for now)
 router.get("/logout", (req, res) => {
-  res.redirect("/login");
+  res.redirect("/auth/login");
 });
 
 module.exports = router;
