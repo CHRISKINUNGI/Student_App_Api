@@ -1,12 +1,15 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
+const express = require('express');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const path = require("path");
 
-// Load environment variables
-dotenv.config();
+const adminRoutes = require('./routes/admin'); // Admin routes
+const applicationRoutes = require('./routes/application'); // Application routes
+
+// Load environment variables from .env file
+dotenv.config(); // This must be called before accessing any env variables
 
 // Import the routes
 const authRoutes = require("./routes/auth");
@@ -72,6 +75,8 @@ app.use("/", protect, (req, res) => {
 app.use((req, res) => {
   return res.render("404");
 });
+app.use('/api/admin', adminRoutes); // Admin routes
+app.use('/api/application', applicationRoutes); // Application routes
 
 // Start the server
 app.listen(PORT, () => {
