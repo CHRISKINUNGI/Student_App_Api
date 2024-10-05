@@ -13,7 +13,6 @@ dotenv.config(); // This must be called before accessing any env variables
 // Import the routes
 const authRoutes = require("./routes/auth");
 const visaApplicationRoutes = require("./routes/visaApplication");
-const adminRoutes = require("./routes/admin");
 const studentRoutes = require("./routes/student");
 const { protect, roleAuth } = require("./middlewares/auth");
 
