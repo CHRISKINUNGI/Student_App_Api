@@ -5,8 +5,6 @@ const User = require("../models/User");
 const protect = async (req, res, next) => {
   let token = req.headers.authorization || req.session.token;
 
-  console.log("token", token);
-
   if (!token || !token.startsWith("Bearer")) {
     return res.redirect("/auth/login");
   }
@@ -28,6 +26,28 @@ const protect = async (req, res, next) => {
   }
 };
 
+const redirectIfAuthenticated = async (req, res, next) => {
+  const token = req.headers.authorization || req.session.token;
+
+  if (token) {
+    try {
+      // Verify the token if it exists
+      const decoded = jwt.verify(token.split(" ")[1], process.env.JWT_SECRET);
+
+      // Find the user and attach user info (id and role) to the request object
+      req.user = await User.findById(decoded.id).select("-password");
+
+      // If user is found, redirect to the dashboard
+      if (req.user) {
+        return res.redirect(`/${req.user.role}/dashboard`);
+      }
+    } catch (error) {
+      return res.redirect("/auth/login");
+    }
+  }
+  next();
+};
+
 // Role-based access control middleware
 const roleAuth = (role) => {
   return (req, res, next) => {
@@ -38,4 +58,4 @@ const roleAuth = (role) => {
   };
 };
 
-module.exports = { protect, roleAuth };
+module.exports = { protect, roleAuth, redirectIfAuthenticated };
