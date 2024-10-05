@@ -1,6 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const adminRoutes = require('./routes/admin'); // Admin routes
+const applicationRoutes = require('./routes/application'); // Application routes
 
 // Load environment variables from .env file
 dotenv.config(); // This must be called before accessing any env variables
@@ -22,6 +24,8 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
 // Use routes
 app.use('/api/auth', authRoutes); // Authentication routes
 app.use('/api/visa', visaApplicationRoutes); // Visa application routes
+app.use('/api/admin', adminRoutes); // Admin routes
+app.use('/api/application', applicationRoutes); // Application routes
 
 // Start the server
 app.listen(PORT, () => {
