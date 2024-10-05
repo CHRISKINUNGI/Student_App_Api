@@ -1,28 +1,30 @@
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const jwt = require("jsonwebtoken");
+const User = require("../models/User");
 
 // Protect middleware to ensure the user is authenticated
 const protect = async (req, res, next) => {
-  let token = req.headers.authorization;
+  let token = req.headers.authorization || req.session.token;
 
-  if (!token || !token.startsWith('Bearer')) {
-    return res.status(401).json({ message: 'Not authorized, token missing' });
+  console.log("token", token);
+
+  if (!token || !token.startsWith("Bearer")) {
+    return res.redirect("/auth/login");
   }
 
   try {
     // Extract the token from the Authorization header
-    token = token.split(' ')[1];
+    token = token.split(" ")[1];
 
     // Verify the token and extract user info
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     // Find the user and attach user info (id and role) to the request object
-    req.user = await User.findById(decoded.id).select('-password');
+    req.user = await User.findById(decoded.id).select("-password");
 
     // Proceed to the next middleware or route handler
     next();
   } catch (error) {
-    return res.status(401).json({ message: 'Token is not valid' });
+    return res.redirect("/auth/login");
   }
 };
 
@@ -30,7 +32,7 @@ const protect = async (req, res, next) => {
 const roleAuth = (role) => {
   return (req, res, next) => {
     if (req.user.role !== role) {
-      return res.status(403).json({ message: `Access denied: ${role} role required` });
+      return res.redirect(`/${role}/login`);
     }
     next();
   };
