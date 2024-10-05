@@ -7,30 +7,22 @@ const menuItems = [
     {
         title: "Dashboard",
         icon: "tf-icons bx bx-home-circle",
-        url: "dashboard",
+        url: "/admin/dashboard",
         allowedRoles: ["admin", "coordinator"],
     },
-    {
-        title: "Clients",
-        icon: "tf-icons bx bx-group",
+     {
+        title: "Visa Applications",
+        icon: "tf-icons bx bx-file",
         url: "#",
         subItems: [
             {
-                title: "View Clients",
-                url: "view-clients",
+                title: "View Applications",
+                url: "/admin/view-applications",
                 allowedRoles: ["admin", "coordinator"],
             },
-        ],
-        allowedRoles: ["admin", "coordinator"],
-    },
-    {
-        title: "Assignments",
-        icon: "tf-icons bx bx-building",
-        url: "#",
-        subItems: [
             {
-                title: "View Assignments",
-                url: "view-assignments",
+                title: "Create Application",
+                url: "/admin/create-application",
                 allowedRoles: ["admin", "coordinator"],
             },
         ],
@@ -43,12 +35,12 @@ const menuItems = [
         subItems: [
             {
                 title: "Add Admins",
-                url: "add-admins",
+                url: "/admin/add-admin",
                 allowedRoles: ["admin"],
             },
             {
                 title: "View Admins",
-                url: "view-admins",
+                url: "/admin/view-admins",
                 allowedRoles: ["admin"],
             },
         ],
@@ -61,7 +53,7 @@ const menuItems = [
         subItems: [
             {
                 title: "Change Password",
-                url: "change-password",
+                url: "/admin/change-password",
                 allowedRoles: ["admin", "coordinator"],
             },
             // Add more admin options here with allowed roles
@@ -71,19 +63,19 @@ const menuItems = [
     {
         title: "Payments",
         icon: "tf-icons bx bx-dollar-circle",
-        url: "view_payments",
+        url: "/admin/payments",
         allowedRoles: ["admin", "coordinator"],
     },
     {
         title: "Profile",
         icon: "tf-icons bx bx-user",
-        url: "profile",
+        url: "/admin/profile",
         allowedRoles: ["admin", "coordinator"],
     },
     {
         title: "Logout",
         icon: "tf-icons bx bx-log-out-circle",
-        url: "auth/logout",
+        url: "/auth/logout",
         allowedRoles: ["admin", "coordinator"],
     },
 ];
@@ -112,7 +104,7 @@ function isURLActive(itemURL) {
     <% menuItems.forEach(item => { %>
     <% if (item.allowedRoles.includes('admin')) { %>
     <li class="menu-item <%= isURLActive(item.url) ? 'active' : '' %> <%= !isEmpty(item.subItems) && item.subItems?.some(sub => isURLActive(sub.url)) ? 'active open' : '' %>">
-      <a href="/<%= item.url %>" class="menu-link <%= item.subItems ? 'menu-toggle' : '' %>">
+      <a href="<%= item.url %>" class="menu-link <%= item.subItems ? 'menu-toggle' : '' %>">
         <i class="menu-icon tf-icons <%= item.icon %>"></i>
         <div><%= item.title %></div>
       </a>
@@ -121,7 +113,7 @@ function isURLActive(itemURL) {
         <% item.subItems.forEach(subItem => { %>
         <% if (subItem.allowedRoles.includes('admin')) { %>
         <li class="menu-item <%= isURLActive(subItem.url) ? 'active' : '' %>">
-          <a href="/<%= subItem.url %>" class="menu-link">
+          <a href="<%= subItem.url %>" class="menu-link">
             <div><%= subItem.title %></div>
           </a>
         </li>
