@@ -50,7 +50,7 @@ router.get("/dashboard", (req, res) => {
     today_assignments: 5,
     payments_sum: 1500.0,
     assignment_count: 15,
-    title: "Registration Page",
+    title: "Dashboard",
   };
   res.render("admin/dashboard", data);
 });

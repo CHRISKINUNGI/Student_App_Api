@@ -48,35 +48,17 @@
 
 <body>
   <!-- Layout wrapper -->
-  <div class="layout-wrapper layout-content-navbar  ">
-    <div class="layout-container">
-      <!-- Layout container -->
-      <!-- Menu -->
-      <%- include('../layouts/sidebar.ejs') %>
-      <!-- / Menu -->
-      <div class="layout-page">
-        <!-- Navbar -->
-        <%- include('../layouts/search_bar.ejs') %>
-        <!-- Content wrapper -->
-        <div class="content-wrapper"></div>
+  <div class="layout-wrapper layout-content-navbar" style="height: 100vh;">
 
-        <div class="row d-flex justify-content-center mt-2">
+    <div class="row d-flex justify-content-center align-items-center mt-0 w-100">
 
-          <% if (notification && notification.type === 'error') { %>
-          <div class="alert alert-danger text-center" style="width: 95%">
-            <%= notification.message %>
-          </div>
-          <% } %>
-
-          <!-- Check if there's a success message -->
-          <% if (notification && notification.type === 'success') { %>
-          <div class="alert alert-success text-center" style="width: 95%">
-            <%= notification.message %>
-          </div>
-          <% } %>
-
-          <% 
-            delete notification; 
-            %>
+      <div class="container text-center mt-0">
+        <div class="mt-4">
+          <img src="/assets/img/404.jpg" alt="404 Image" class="img-fluid" />
         </div>
-        <!-- / Navbar -->
+        <h2 class="mt-3">Oops! Page Not Found</h2>
+        <p class="lead">We're sorry, but the page you are looking for doesn't exist.</p>
+        <a href="/" class="btn btn-primary mt-4">Go to Homepage</a>
+      </div>
+
+      <%- include('layouts/footer.ejs') %>

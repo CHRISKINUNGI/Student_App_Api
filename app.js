@@ -65,20 +65,18 @@ app.use("/api/auth", authRoutes);
 app.use("/api/visa", visaApplicationRoutes);
 app.use("/auth", authRoutes);
 app.use("/admin", protect, roleAuth("admin"), adminRoutes);
-app.use("/student", protect, roleAuth("user"), studentRoutes);
+app.use("/user", protect, roleAuth("user"), studentRoutes);
+
+app.use("/api/admin", adminRoutes); // Admin routes
+app.use("/api/application", applicationRoutes); // Application routes
 
 // Catch-all route for redirecting
 app.use("/", protect, (req, res) => {
   console.log(req.originalUrl);
-  return res.redirect(`/${req.user.role}/dashboard`);
+  if (req.originalUrl == "/")
+    return res.redirect(`/${req.user.role}/dashboard`);
+  return res.render("404", { title: "Page Not Found" });
 });
-
-app.use((req, res) => {
-  return res.render("404");
-});
-
-app.use("/api/admin", adminRoutes); // Admin routes
-app.use("/api/application", applicationRoutes); // Application routes
 
 // Start the server
 app.listen(PORT, () => {

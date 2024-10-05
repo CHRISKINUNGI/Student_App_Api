@@ -71,8 +71,8 @@ const redirectIfAuthenticated = async (req, res, next) => {
 // Role-based access control middleware
 const roleAuth = (role) => {
   return (req, res, next) => {
-    if (req.user.role !== role && redirect) {
-      return res.redirect(`/${role}/login`);
+    if (req.user.role !== role) {
+      return res.redirect(`/`);
     }
     next();
   };

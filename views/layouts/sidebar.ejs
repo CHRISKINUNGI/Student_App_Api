@@ -12,7 +12,7 @@ const menuItems = [
     {
         title: "Dashboard ",
         icon: "tf-icons bx bx-home-circle",
-        url: "/admin/dashboard",
+        url: `/${user.role}/dashboard`,
         allowedRoles: ["admin", "coordinator"],
     },
      {
@@ -22,12 +22,12 @@ const menuItems = [
         subItems: [
             {
                 title: "View Applications",
-                url: "/admin/view-applications",
+                url: `/${user.role}/view-applications`,
                 allowedRoles: ["admin", "coordinator"],
             },
             {
                 title: "Create Application",
-                url: "/admin/create-application",
+                url: `/${user.role}/create-application`,
                 allowedRoles: ["admin", "coordinator"],
             },
         ],
@@ -40,12 +40,12 @@ const menuItems = [
         subItems: [
             {
                 title: "Add Users",
-                url: "/admin/add-user",
+                url: `/${user.role}/add-user`,
                 allowedRoles: ["admin"],
             },
             {
                 title: "View Users",
-                url: "/admin/view-users",
+                url: `/${user.role}/view-users`,
                 allowedRoles: ["admin"],
             },
         ],
@@ -58,7 +58,7 @@ const menuItems = [
         subItems: [
             {
                 title: "Change Password",
-                url: "/admin/change-password",
+                url: `/${user.role}/change-password`,
                 allowedRoles: ["admin", "coordinator"],
             },
             // Add more admin options here with allowed roles
@@ -68,13 +68,13 @@ const menuItems = [
     {
         title: "Payments",
         icon: "tf-icons bx bx-dollar-circle",
-        url: "/admin/payments",
+        url: `/${user.role}/payments`,
         allowedRoles: ["admin", "coordinator"],
     },
     {
         title: "Profile",
         icon: "tf-icons bx bx-user",
-        url: "/admin/profile",
+        url: `/${user.role}/profile`,
         allowedRoles: ["admin", "coordinator"],
     },
     {
