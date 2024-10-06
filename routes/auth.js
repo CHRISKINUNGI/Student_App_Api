@@ -11,7 +11,7 @@ router.post("/register", registerUser);
 router.post("/login", login);
 
 // Render login page
-router.get("/login", redirectIfAuthenticated, (req, res) => {
+router.get("/login", (req, res) => {
   res.render("auth/login", {
     title: "Login Page",
   });

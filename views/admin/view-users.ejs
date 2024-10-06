@@ -1,0 +1,62 @@
+<%
+function formatDate(date) {
+  if (!date) return ""; // Handle undefined or null dates
+
+  const options = {
+    weekday: "long", // e.g., Thursday
+    year: "numeric", // e.g., 2024
+    month: "long", // e.g., March
+    day: "numeric", // e.g., 10
+    hour: "numeric", // e.g., 12 (for 12:30 PM)
+    minute: "numeric", // e.g., 30
+    hour12: true, // Ensures 12-hour format with AM/PM
+  };
+
+  return new Intl.DateTimeFormat("en-US", options).format(new Date(date));
+}
+%>
+<%- include('../layouts/auth.header.ejs') %>
+
+<div class="container-xxl flex-grow-1 mt-2">
+  <h3 class="p3">Users</h3>
+  <section class="connectedSortable">
+    <div class="card card-indigo">
+      <div class="card-body">
+        <div class="card-datatable table-responsive">
+          <table class="datatables-basic table border-top">
+            <thead>
+              <th>No.</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Date Created</th>
+              <th>Action</th>
+            </thead>
+            <tbody>
+              <% let i = 0; %>
+              <% users.forEach(function(user) { i++; %>
+              <tr>
+                <td><%= i %></td>
+                <td><%= user.username %></td>
+                <td><%= user.email %></td>
+                <td><%= user.role %></td>
+                <td><%= formatDate(user.created_at) %></td>
+                <td>
+                  <a href=<%= `edit-user/${user.id}` %> class="btn btn-success">
+                    <i class="bx bx-pencil"></i>
+                  </a>
+                  <a href="#" class="btn btn-danger">
+                    <i class="bx bx-trash"></i>
+                  </a>
+                </td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<%- include('../layouts/footer.ejs') %>

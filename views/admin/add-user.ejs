@@ -1,0 +1,40 @@
+<%- include('../layouts/auth.header.ejs') %>
+
+<div class="container-xxl flex-grow-1 mt-2">
+  <h3 class="p3"><%= title %></h3> <!-- "Add User" or "Edit User" -->
+
+  <section class="connectedSortable">
+    <div class="card card-indigo">
+      <div class="card-body">
+        <form action="<%= user ? `/user/edit-user/${user._id}` : '/admin/add-user' %>" method="post">
+          <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" class="form-control" id="username" name="username" placeholder="Enter user username" value="<%= user ? user.username : '' %>" required>
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" name="email" placeholder="Enter user email" value="<%= user ? user.email : '' %>" required>
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" name="password" placeholder="Enter password" value="">
+          </div>
+
+          <div class="mb-3">
+            <label for="role" class="form-label">Role</label>
+            <select class="form-select" id="role" name="role" required>
+              <option value="admin" <%= user && user.role === 'admin' ? 'selected' : '' %>>Admin</option>
+              <option value="user" <%= user && user.role === 'user' ? 'selected' : '' %>>Student</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <button type="submit" class="btn btn-primary">
+              <%= user ? 'Update User' : 'Add User' %>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+</div>
+<%- include('../layouts/footer.ejs') %>
