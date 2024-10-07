@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Application</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .card {
+            margin-top: 50px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .btn-success {
+            background-color: #28a745;
+            border: none;
+        }
+        .btn-success:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="text-center mb-4">Update Application for <%= user.name %></h2>
+                        <form action="/applications/<%= application._id %>" method="POST">
+                            <input type="hidden" name="_method" value="PATCH">
+
+                            <!-- Status -->
+                            <div class="mb-3">
+                                <label for="status" class="form-label">Application Status</label>
+                                <select id="status" name="status" class="form-select">
+                                    <option value="draft" <%= application.status === 'draft' ? 'selected' : '' %>>Draft</option>
+                                    <option value="submitted" <%= application.status === 'submitted' ? 'selected' : '' %>>Submitted</option>
+                                    <option value="in review" <%= application.status === 'in review' ? 'selected' : '' %>>In Review</option>
+                                    <option value="approved" <%= application.status === 'approved' ? 'selected' : '' %>>Approved</option>
+                                    <option value="rejected" <%= application.status === 'rejected' ? 'selected' : '' %>>Rejected</option>
+                                </select>
+                            </div>
+
+                            <!-- Documents Submitted -->
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="documentsSubmitted" name="documentsSubmitted" value="true" <%= application.documentsSubmitted ? 'checked' : '' %>>
+                                <label class="form-check-label" for="documentsSubmitted">Documents Submitted</label>
+                            </div>
+
+                            <!-- Documents Verified -->
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="documentsVerified" name="documentsVerified" value="true" <%= application.documentsVerified ? 'checked' : '' %>>
+                                <label class="form-check-label" for="documentsVerified">Documents Verified</label>
+                            </div>
+
+                            <!-- Payment Verified -->
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="paymentVerified" name="paymentVerified" value="true" <%= application.paymentVerified ? 'checked' : '' %>>
+                                <label class="form-check-label" for="paymentVerified">Payment Verified</label>
+                            </div>
+
+                            <!-- Visa Processing -->
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="visaProcessing" name="visaProcessing" value="true" <%= application.visaProcessing ? 'checked' : '' %>>
+                                <label class="form-check-label" for="visaProcessing">Visa Processing</label>
+                            </div>
+
+                            <!-- Visa Ready -->
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="visaReady" name="visaReady" value="true" <%= application.visaReady ? 'checked' : '' %>>
+                                <label class="form-check-label" for="visaReady">Visa Ready</label>
+                            </div>
+
+                            <!-- Collection Date -->
+                            <div class="mb-3">
+                                <label for="collectionDate" class="form-label">Collection Date</label>
+                                <input type="date" id="collectionDate" name="collectionDate" class="form-control" value="<%= application.collectionDate ? application.collectionDate.toISOString().split('T')[0] : '' %>">
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-success btn-lg">Update Application</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

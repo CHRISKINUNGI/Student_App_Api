@@ -17,8 +17,8 @@ const submitApplication = async (req, res) => {
     // Create a new application
     const newApplication = new Application({
       userId,
-      section1Completed,
-      section2Completed,
+      section1Completed: section1Completed === 'true',  // Store as boolean
+      section2Completed: section2Completed === 'true',  // Store as boolean
       status: 'submitted',
       documentsSubmitted: false,
       documentsVerified: false,
@@ -57,12 +57,34 @@ const getUserApplications = async (req, res) => {
   }
 };
 
+// Get the total number of applications (Admin/General use)
+const getTotalApplications = async (req, res) => {
+  try {
+    console.log('Fetching total number of applications...');
+
+    // Retrieve total application count
+    const totalApplications = await Application.countDocuments();
+    
+    console.log('Total applications:', totalApplications);
+    return res.status(200).json({ totalApplications });
+  } catch (error) {
+    console.error('Error fetching total applications:', error);
+    return res.status(500).json({ error: 'Server error. Please try again later.' });
+  }
+};
+
 // Update the status of an application (for admin use)
 const updateApplicationStatus = async (req, res) => {
   try {
     console.log('Updating application status...');
     const { applicationId } = req.params;
     const { status } = req.body;  // Extract status from request body
+
+    // Ensure the status is valid
+    const allowedStatuses = ['draft', 'submitted', 'in review', 'approved', 'rejected'];
+    if (!allowedStatuses.includes(status)) {
+      return res.status(400).json({ message: 'Invalid status value.' });
+    }
 
     // Find the application and update the status
     const application = await Application.findByIdAndUpdate(applicationId, { status }, { new: true });
@@ -78,4 +100,4 @@ const updateApplicationStatus = async (req, res) => {
   }
 };
 
-module.exports = { submitApplication, getUserApplications, updateApplicationStatus };
+module.exports = { submitApplication, getUserApplications, getTotalApplications, updateApplicationStatus };
