@@ -13,7 +13,6 @@ dotenv.config();
 const authRoutes = require("./routes/auth");
 const adminRoutes = require("./routes/admin");
 const visaApplicationRoutes = require("./routes/visaApplication");
-const applicationRoutes = require("./routes/application");
 const studentRoutes = require("./routes/student");
 const { protect, roleAuth, assignUser } = require("./middlewares/auth");
 
