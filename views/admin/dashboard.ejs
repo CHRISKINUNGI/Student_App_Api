@@ -13,8 +13,8 @@
                 pending visa applications
               </p>
               <p class="mb-4">
-                <span class="fw-medium"><%= today_assignments %></span>
-                visa applications are due today.
+                <span class="fw-medium"><%= today_due %></span>
+                visa applications due today.
               </p>
               <a href="view-applications" class="btn btn-sm btn-outline-primary">View Applications</a>
             </div>
@@ -56,13 +56,12 @@
       </div>
     </div>
 
-    <!-- Total Tasks -->
+    <!-- Total Visa Applications -->
     <div class="col-12 col-lg-8 order-2 order-md-3 order-lg-2 mb-4">
       <div class="card">
         <div class="row row-bordered g-0">
           <div class="col-md-8">
             <h5 class="card-header m-0 me-2 pb-3">Total Visa Applications</h5>
-            <!-- <div id="totalVisaChart" class="px-2"></div> -->
             <div id="incomeChart"></div>
           </div>
           <div class="col-md-4">
@@ -109,10 +108,10 @@
       </div>
     </div>
 
-    <!--/ Total Applications -->
+    <!-- Visa Fees Collected -->
     <div class="col-12 col-md-8 col-lg-4 order-3 order-md-2">
       <div class="row">
-        <div class="col-6 mb-4">
+        <div class="col-12 mb-4">
           <div class="card">
             <div class="card-body">
               <div class="card-title d-flex align-items-start justify-content-between">
@@ -135,37 +134,14 @@
             </div>
           </div>
         </div>
-        <div class="col-6 mb-4">
-          <div class="card">
-            <div class="card-body">
-              <div class="card-title d-flex align-items-start justify-content-between">
-                <div class="avatar flex-shrink-0">
-                  <img src="/assets/img/icons/unicons/cc-primary.png" alt="Assignments" class="rounded" />
-                </div>
-                <div class="dropdown">
-                  <button class="btn p-0" type="button" id="cardOpt1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="bx bx-dots-vertical-rounded"></i>
-                  </button>
-                  <div class="dropdown-menu" aria-labelledby="cardOpt1">
-                    <a class="dropdown-item" href="javascript:void(0);">View More</a>
-                    <a class="dropdown-item" href="javascript:void(0);">Delete</a>
-                  </div>
-                </div>
-              </div>
-              <span class="fw-medium d-block mb-1">Pending Visa Applications</span>
-              <h3 class="card-title mb-2"><%= assignment_count %></h3>
-              <small class="text-success fw-medium"><i class="bx bx-up-arrow-alt"></i> +28.14%</small>
-            </div>
-          </div>
-        </div>
         <div class="col-12 mb-4">
           <div class="card">
             <div class="card-body">
               <div class="d-flex justify-content-between flex-sm-row flex-column gap-3">
                 <div>
                   <h5 class="card-title">Today's Performance</h5>
-                  <span class="text-muted d-block mb-1">Total Assignments</span>
-                  <h3 class="text-nowrap mb-0"><%= today_assignments %></h3>
+                  <span class="text-muted d-block mb-1">Total Visa Applications</span>
+                  <h3 class="text-nowrap mb-0"><%= total_visa_applications %></h3>
                 </div>
                 <div class="d-flex align-items-end flex-wrap">
                   <span class="badge bg-label-primary p-2"><i class="bx bx-user text-primary"></i></span>

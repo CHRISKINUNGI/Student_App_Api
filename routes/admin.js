@@ -2,56 +2,33 @@ const express = require("express");
 const router = express.Router();
 const adminController = require("../controllers/adminController");
 const User = require("../models/User");
-
-// Update document submission status
-router.post(
-  "/review/documents/:applicationId",
-  adminController.updateDocumentStatus
-);
-
-// Update document verification status
-router.post(
-  "/review/verify-documents/:applicationId",
-  adminController.updateVerificationStatus
-);
-
-// Update payment verification status
-router.post(
-  "/review/payment/:applicationId",
-  adminController.updatePaymentStatus
-);
-
-// Update visa processing status
-router.post(
-  "/review/visa-processing/:applicationId",
-  adminController.updateVisaProcessing
-);
-
-// Update visa ready status
-router.post(
-  "/review/visa-ready/:applicationId",
-  adminController.updateVisaReady
-);
-
-// Set collection date
-router.post(
-  "/review/collection-date/:applicationId",
-  adminController.setCollectionDate
-);
-
-// Mock database
-const students = [];
+const VisaApplication = require("../models/VisaApplication");
+const upload = require("../middlewares/multer");
 
 // Render admin dashboard
-router.get("/dashboard", (req, res) => {
+router.get("/dashboard", async (req, res) => {
+  // Get visa applications from the database
+  const visas = await VisaApplication.find();
+
+  // Filter for pending and completed visa applications
+  const pendingVisaApplications = visas.filter((e) => e.status === "pending");
+  const completedVisaApplications = visas.filter(
+    (e) => e.status === "completed"
+  );
+
+  // Get today's date
+  const today = new Date().toISOString().split("T")[0];
+  const todayVisaApplications = visas.filter((e) => e.dueDate === today);
+
   const data = {
-    pending_count: 10,
-    completed_count: 20,
-    today_assignments: 5,
+    pending_count: pendingVisaApplications.length,
+    completed_count: completedVisaApplications.length,
+    today_due: todayVisaApplications.length,
     payments_sum: 1500.0,
-    assignment_count: 15,
+    total_visa_applications: visas.length,
     title: "Dashboard",
   };
+
   res.render("admin/dashboard", data);
 });
 
@@ -63,6 +40,20 @@ router.get("/view-users", async (req, res) => {
     res.render("admin/view-users", { users, title: "View Users" });
   } catch (err) {
     console.error("Error fetching users:", err);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+router.get("/view-applications", async (req, res) => {
+  try {
+    const applications = await VisaApplication.find().sort({ createdAt: -1 }); // 1 for ascending order
+
+    res.render("admin/view-applications", {
+      applications,
+      title: "View Applications",
+    });
+  } catch (err) {
+    console.error("Error fetching visas:", err);
     res.status(500).send("Internal Server Error");
   }
 });
@@ -83,17 +74,6 @@ router.get("/edit-user/:id", async (req, res) => {
   } catch (err) {
     console.error("Error fetching users:", err);
     res.status(500).send("Server Error");
-  }
-});
-
-// Route to view edit admin form
-router.get("/delete-user/:id", async (req, res) => {
-  try {
-    const user = await User.findByIdAndDelete(req.params.id);
-  } catch (err) {
-    console.log(err);
-  } finally {
-    res.redirect("/admin/view-users");
   }
 });
 
@@ -129,15 +109,131 @@ router.post("/edit-user/:id", async (req, res) => {
   }
 });
 
-// Approve a student
-router.post("/approve/:username", (req, res) => {
-  const student = students.find((s) => s.username === req.params.username);
-  if (student) {
-    student.approved = true;
+// Route to view edit admin form
+router.get("/delete-user/:id", async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+  } catch (err) {
+    console.log(err);
+  } finally {
+    res.redirect("/admin/view-users");
   }
-  res.redirect("/admin");
 });
 
-module.exports = router;
+// Route to view add visa application form
+router.get("/add-application", async (req, res) => {
+  const users = await User.find({ role: "user" });
+  res.render("admin/add-application", {
+    application: null,
+    users: users,
+    title: "Add Visa Application",
+  });
+});
+
+// Route to view edit visa application form
+router.get("/edit-application/:id", async (req, res) => {
+  try {
+    const application = await VisaApplication.findById(req.params.id);
+    if (!application) {
+      return res.status(404).send("Visa application not found");
+    }
+    res.render("admin/add-application", {
+      application,
+      title: "Edit Visa Application",
+    });
+  } catch (err) {
+    console.error("Error fetching visa application:", err);
+    res.status(500).send("Server Error");
+  }
+});
+
+// Route to add a new visa application
+router.post(
+  "/add-application",
+  upload.fields([
+    { name: "passportDocument", maxCount: 1 },
+    { name: "financialProof", maxCount: 1 },
+  ]),
+  async (req, res) => {
+    const { name, dateOfBirth, nationality, passportNumber, user } = req.body;
+    console.log(req.files);
+    const passportDocument = req.files["passportDocument"]
+      ? req.files["passportDocument"][0].path
+      : null; // Get file path
+    const financialProof = req.files["financialProof"]
+      ? req.files["financialProof"][0].path
+      : null; // Get file path
+
+    const applicationUser = await User.findById(user);
+
+    try {
+      const newApplication = new VisaApplication({
+        user: applicationUser,
+        name,
+        dateOfBirth,
+        nationality,
+        passportNumber,
+        passportDocument,
+        financialProof,
+      });
+      await newApplication.save();
+      res.redirect("/admin/view-applications");
+    } catch (err) {
+      res.status(500).send("Server Error: " + err);
+    }
+  }
+);
+
+// Route to update existing visa application
+router.post(
+  "/edit-application/:id",
+  upload.fields([
+    { name: "passportDocument", maxCount: 1 },
+    { name: "financialProof", maxCount: 1 },
+  ]),
+  async (req, res) => {
+    const { name, dateOfBirth, nationality, passportNumber } = req.body;
+
+    const obj = {
+      name,
+      dateOfBirth,
+      nationality,
+      passportNumber,
+    };
+
+    // Handle file uploads if provided
+    if (req.files && req.files["passportDocument"]) {
+      obj.passportDocument = req.files["passportDocument"][0].path;
+    }
+    if (req.files && req.files["financialProof"]) {
+      obj.financialProof = req.files["financialProof"][0].path;
+    }
+
+    try {
+      const application = await VisaApplication.findByIdAndUpdate(
+        req.params.id,
+        obj,
+        { new: true }
+      ); // Return the updated document
+      if (!application) {
+        return res.status(404).send("Visa application not found");
+      }
+      res.redirect("/admin/view-applications");
+    } catch (err) {
+      res.status(500).send("Server Error: " + err);
+    }
+  }
+);
+
+// Route to view edit admin form
+router.get("/delete-application/:id", async (req, res) => {
+  try {
+    const user = await VisaApplication.findByIdAndDelete(req.params.id);
+  } catch (err) {
+    console.log(err);
+  } finally {
+    res.redirect("/admin/view-applications");
+  }
+});
 
 module.exports = router;

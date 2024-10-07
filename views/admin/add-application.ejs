@@ -1,0 +1,63 @@
+<%- include('../layouts/auth.header.ejs') %>
+
+<div class="container-xxl flex-grow-1 mt-2">
+  <h3 class="p3"><%= title %></h3> <!-- "Edit Visa Application" or "Add Visa Application" -->
+
+  <section class="connectedSortable">
+    <div class="card card-indigo">
+      <div class="card-body">
+        <form action="<%= application ? `/admin/edit-application/${application._id}` : '/admin/add-application' %>" method="post" enctype="multipart/form-data">
+          <% if (!application) { %>
+          <!-- Only show user selection if adding a new application -->
+          <div class="mb-3">
+            <label for="user" class="form-label">Select User</label>
+            <select class="form-select" id="user" name="user" required>
+              <option value="">Select a user</option>
+              <% users.forEach(user => { %>
+              <option value="<%= user._id %>" <%= application && application.user._id === user._id ? 'selected' : '' %>><%= user.username %> - <%= user.email %></option>
+              <% }) %>
+            </select>
+          </div>
+          <% } %>
+          <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" name="name" placeholder="Enter applicant's name" value="<%= application ? application.name : '' %>" required>
+          </div>
+          <div class="mb-3">
+            <label for="dateOfBirth" class="form-label">Date of Birth</label>
+            <input type="date" class="form-control" id="dateOfBirth" name="dateOfBirth" value="<%= application ? application.dateOfBirth.toISOString().split('T')[0] : '' %>" required>
+          </div>
+          <div class="mb-3">
+            <label for="nationality" class="form-label">Nationality</label>
+            <input type="text" class="form-control" id="nationality" name="nationality" placeholder="Enter nationality" value="<%= application ? application.nationality : '' %>" required>
+          </div>
+          <div class="mb-3">
+            <label for="passportNumber" class="form-label">Passport Number</label>
+            <input type="text" class="form-control" id="passportNumber" name="passportNumber" placeholder="Enter passport number" value="<%= application ? application.passportNumber : '' %>" required>
+          </div>
+          <div class="mb-3">
+            <label for="passportDocument" class="form-label">Passport Document</label>
+            <input type="file" class="form-control" id="passportDocument" name="passportDocument">
+            <% if (application && application.passportDocument) { %>
+            <a href="/<%= application.passportDocument %>" target="_blank">View Current Document</a>
+            <% } %>
+          </div>
+          <div class="mb-3">
+            <label for="financialProof" class="form-label">Financial Proof</label>
+            <input type="file" class="form-control" id="financialProof" name="financialProof">
+            <% if (application && application.financialProof) { %>
+            <a href="/<%= application.financialProof %>" target="_blank" download>View Current Document</a>
+            <% } %>
+          </div>
+          <div class="mb-3">
+            <button type="submit" class="btn btn-primary">
+              <%= application ? 'Update Visa Application' : 'Add Visa Application' %>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+</div>
+
+<%- include('../layouts/footer.ejs') %>

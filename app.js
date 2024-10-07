@@ -5,8 +5,6 @@ const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const path = require("path");
 
-const applicationRoutes = require("./routes/application"); // Application routes
-
 dotenv.config();
 
 // Import the routes
@@ -22,6 +20,7 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware to serve static files
 app.use(express.static(path.join(__dirname, "public")));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Set view engine
 app.set("view engine", "ejs");
