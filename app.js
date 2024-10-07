@@ -56,6 +56,7 @@ mongoose
 app.use(assignUser, (req, res, next) => {
   res.locals.request = req;
   res.locals.notification = req.session.notification || null;
+  res.locals.currentUser = req.user || null;
   res.locals.errors = req.session.errors || null;
   next();
 });

@@ -45,7 +45,7 @@ function formatDate(date) {
                   <a href=<%= `edit-user/${user.id}` %> class="btn btn-success">
                     <i class="bx bx-pencil"></i>
                   </a>
-                  <a href="#" class="btn btn-danger">
+                  <a href=<%= `delete-user/${user.id}` %> class="btn btn-danger" onclick="return confirm('Are you sure you want to delete user <%= user.username %>')">
                     <i class="bx bx-trash"></i>
                   </a>
                 </td>

@@ -76,12 +76,24 @@ router.get("/add-user", (req, res) => {
 router.get("/edit-user/:id", async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
-    if (!admin) {
+    if (!user) {
       return res.status(404).send("Admin not found");
     }
     res.render("admin/add-user", { user, title: "Edit Admin" });
   } catch (err) {
+    console.error("Error fetching users:", err);
     res.status(500).send("Server Error");
+  }
+});
+
+// Route to view edit admin form
+router.get("/delete-user/:id", async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+  } catch (err) {
+    console.log(err);
+  } finally {
+    res.redirect("/admin/view-users");
   }
 });
 
