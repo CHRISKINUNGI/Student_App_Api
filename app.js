@@ -13,6 +13,7 @@ const adminRoutes = require("./routes/admin");
 const visaApplicationRoutes = require("./routes/visaApplication");
 const studentRoutes = require("./routes/student");
 const { protect, roleAuth, assignUser } = require("./middlewares/auth");
+const applicationRoutes = require("./routes/application");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
