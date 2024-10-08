@@ -12,7 +12,7 @@ const menuItems = [
         title: "Dashboard ",
         icon: "tf-icons bx bx-home-circle",
         url: `/${currentUser.role}/dashboard`,
-        allowedRoles: ["admin", "coordinator"],
+        allowedRoles: ["admin", "user"],
     },
      {
         title: "Visa Applications",
@@ -22,15 +22,15 @@ const menuItems = [
             {
                 title: "View Applications",
                 url: `/${currentUser.role}/view-applications`,
-                allowedRoles: ["admin", "coordinator"],
+                allowedRoles: ["admin", "user"],
             },
             {
                 title: "Create Application",
                 url: `/${currentUser.role}/add-application`,
-                allowedRoles: ["admin", "coordinator"],
+                allowedRoles: ["admin", "user"],
             },
         ],
-        allowedRoles: ["admin", "coordinator"],
+        allowedRoles: ["admin", "user"],
     },
     {
         title: "Users",
@@ -58,29 +58,29 @@ const menuItems = [
             {
                 title: "Change Password",
                 url: `/${currentUser.role}/change-password`,
-                allowedRoles: ["admin", "coordinator"],
+                allowedRoles: ["admin", "user"],
             },
             // Add more admin options here with allowed roles
         ],
-        allowedRoles: ["admin", "coordinator"],
+        allowedRoles: ["admin", "user"],
     },
     {
         title: "Payments",
         icon: "tf-icons bx bx-dollar-circle",
         url: `/${currentUser.role}/payments`,
-        allowedRoles: ["admin", "coordinator"],
+        allowedRoles: ["admin", "user"],
     },
     {
         title: "Profile",
         icon: "tf-icons bx bx-user",
         url: `/${currentUser.role}/profile`,
-        allowedRoles: ["admin", "coordinator"],
+        allowedRoles: ["admin", "user"],
     },
     {
         title: "Logout",
         icon: "tf-icons bx bx-log-out-circle",
         url: "/auth/logout",
-        allowedRoles: ["admin", "coordinator"],
+        allowedRoles: ["admin", "user"],
     },
 ];
 
@@ -106,7 +106,7 @@ function isURLActive(itemURL) {
 
   <ul class="menu-inner py-1">
     <% menuItems.forEach(item => { %>
-    <% if (item.allowedRoles.includes('admin')) { %>
+    <% if (item.allowedRoles.includes(currentUser.role)) { %>
     <li class="menu-item <%= isURLActive(item.url) ? 'active' : '' %> <%= !isEmpty(item.subItems) && item.subItems?.some(sub => isURLActive(sub.url)) ? 'active open' : '' %>">
       <a href="<%= item.url %>" class="menu-link <%= item.subItems ? 'menu-toggle' : '' %>">
         <i class="menu-icon tf-icons <%= item.icon %>"></i>
@@ -115,7 +115,7 @@ function isURLActive(itemURL) {
       <% if (item.subItems && item.subItems.length > 0) { %>
       <ul class="menu-sub">
         <% item.subItems.forEach(subItem => { %>
-        <% if (subItem.allowedRoles.includes('admin')) { %>
+        <% if (subItem.allowedRoles.includes(currentUser.role)) { %>
         <li class="menu-item <%= isURLActive(subItem.url) ? 'active' : '' %>">
           <a href="<%= subItem.url %>" class="menu-link">
             <div><%= subItem.title %></div>
