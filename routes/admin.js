@@ -236,4 +236,47 @@ router.get("/delete-application/:id", async (req, res) => {
   }
 });
 
+// Route to render change password form
+router.get("/change-password", (req, res) => {
+  console.log("Change password page accessed");
+  res.render("admin/change-password", { title: "Change Password" });
+});
+
+// Route to handle password change
+router.post("/change-password", async (req, res) => {
+  const { currentPassword, newPassword, confirmPassword } = req.body;
+
+  try {
+    // Fetch the current user (assuming you have req.user or something similar)
+    const user = await User.findById(req.user._id); // Assuming the user is logged in and req.user contains the user info
+
+    // Check if current password is correct
+    const isMatch = await user.comparePassword(currentPassword);
+    if (!isMatch) {
+      return res.status(400).render("admin/change-password", {
+        error: "Current password is incorrect.",
+        title: "Change Password",
+      });
+    }
+
+    // Check if new passwords match
+    if (newPassword !== confirmPassword) {
+      return res.status(400).render("admin/change-password", {
+        error: "New passwords do not match.",
+        title: "Change Password",
+      });
+    }
+
+    // Update the password if it passes all checks
+    user.password = newPassword;
+    await user.save();
+
+    res.redirect("/admin/dashboard"); // Redirect to dashboard after successful password change
+  } catch (err) {
+    console.error("Error changing password:", err);
+    res.status(500).send("Server Error");
+  }
+});
+
+
 module.exports = router;
