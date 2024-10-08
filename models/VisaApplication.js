@@ -13,6 +13,7 @@ const visaApplicationSchema = new mongoose.Schema({
   passportNumber: { type: String, required: true },
   passportDocument: { type: String, required: true }, // Path to the uploaded file
   financialProof: { type: String, required: true }, // Path to the financial document
+  collectionDate: { type: Date }, // Visa collection date
   createdAt: { type: Date, default: Date.now },
 });
 

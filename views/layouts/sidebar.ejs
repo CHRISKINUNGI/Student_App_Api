@@ -22,7 +22,7 @@ const menuItems = [
             {
                 title: "View Applications",
                 url: `/${currentUser.role}/view-applications`,
-                allowedRoles: ["admin", "user"],
+                allowedRoles: ["admin"],
             },
             {
                 title: "Create Application",
@@ -62,7 +62,7 @@ const menuItems = [
             },
             // Add more admin options here with allowed roles
         ],
-        allowedRoles: ["admin", "user"],
+        allowedRoles: ["admin"],
     },
     {
         title: "Payments",
@@ -93,7 +93,8 @@ function isURLActive(itemURL) {
   <div class="app-brand demo">
     <a href="admin" class="app-brand-link">
       <span class="app-brand-logo demo">
-        <img src="/assets/img/logo/png/logo.png" alt="Brand Logo" class="img-fluid logo-100" />
+        <!-- Dashboard Logo Image -->
+        <img src="/assets/img/logo/png/Logo.png" alt="PLACEMENT" class="img-fluid logo-100" />
       </span>
       <span class="app-brand-text demo menu-text fw-bold ms-2"></span>
     </a>
