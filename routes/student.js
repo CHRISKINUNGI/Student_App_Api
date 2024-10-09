@@ -106,6 +106,7 @@ router.post(
       });
       await newApplication.save();
       res.redirect("/student/dashboard");
+      res.redirect("student/dashboard")
     } catch (err) {
       console.error("Error adding visa application:", err);
       res.status(500).render("error", { message: "There was a problem processing your application." });
